@@ -92,22 +92,28 @@ class MainVM: BaseVM {
 
     func saveSearchText(searchText: String) {
         let history = self.getHistoryFromDb(sHistory: searchText)
-        if (history == nil) {
 
-            if var histories = histories {
-                while (histories.count >= Constant.MAX_HISTORY_COUNT) {
-                    histories.remove(at: histories.count - 1)
+        if (history != nil) {
+            if let histories = histories, let history = history, histories.contains(history) {
 
-                    if let dHistories = self.getAllHistoryFromDb() {
-                        self.deleteHistoryFromDb(history: dHistories[dHistories.count - 1])
-                    }
-                }
-
-                self.saveHistoryToDb(sHistory: searchText)
-
+                self.deleteHistoryFromDb(history: history)
                 self.histories = getAllHistoryFromDb()
-                self.didLayout()
             }
+        }
+
+        if var histories = histories {
+            while (histories.count >= Constant.MAX_HISTORY_COUNT) {
+                histories.remove(at: histories.count - 1)
+
+                if let dHistories = self.getAllHistoryFromDb() {
+                    self.deleteHistoryFromDb(history: dHistories[dHistories.count - 1])
+                }
+            }
+
+            self.saveHistoryToDb(sHistory: searchText)
+
+            self.histories = getAllHistoryFromDb()
+            self.didLayout()
         }
     }
 
