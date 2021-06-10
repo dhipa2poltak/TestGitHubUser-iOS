@@ -6,10 +6,8 @@
 //
 
 import Foundation
-import Alamofire
 import SVProgressHUD
 import EZAlertController
-import CoreData
 
 class MainVM: BaseVM {
 
@@ -19,32 +17,40 @@ class MainVM: BaseVM {
     var isAllDataLoaded = false
 
     var users: [User] = []
-    var searchUsersReponse: SearchUsersResponse?
 
     var isShowHistory = true
     var isShowNoData = false
 
-    var managedObjectContext: NSManagedObjectContext?
+    var appRepository: AppRepository?
     var histories: [History]?
 
-    func initViewModel() {
-        histories = getAllHistoryFromDb()
+    func initViewModel(appRepository: AppRepository) {
+        self.appRepository = appRepository
+        
+        histories = appRepository.getAllHistoryFromDb()
+
+        if let value = histories?.isEmpty {
+            isShowNoData = value
+            self.didLayout()
+        }
     }
 
-    func searchUsers(q: String, page: Int, perPage: Int = Constant.ROW_PER_PAGE) {
+    func searchUsers(q: String, page: Int) {
         if (isAllDataLoaded) {
             return
         }
 
-        SVProgressHUD.showGradient()
-        request(RestService.searchUsers(q: q, page: page, perPage: perPage)).responseJSON { [weak self] resp in
+        if users.isEmpty {
+            SVProgressHUD.setOffsetFromCenter(UIOffset(horizontal: UIApplication.shared.keyWindow?.center.x ?? 0, vertical: UIApplication.shared.keyWindow?.center.y ?? 0))
+            SVProgressHUD.showGradient()
+        }
+        appRepository?.searchUsers(q: q, page: page).responseJSON { [weak self] resp in
             SVProgressHUD.dismiss()
             resp.validate { json in
                 do {
                     let data = try json.rawData(options: .prettyPrinted)
 
                     let response = try JSONDecoder().decode(SearchUsersResponse.self, from: data)
-                    self?.searchUsersReponse = response
 
                     self?.isShowHistory = false
                     self?.isShowNoData = false
@@ -62,10 +68,10 @@ class MainVM: BaseVM {
 
                             self?.page = page
                         } else {
-                            self?.isShowNoData = true
+                            self?.isShowNoData = self?.users.isEmpty ?? true
                         }
                     } else {
-                        self?.isShowNoData = true
+                        self?.isShowNoData = self?.users.isEmpty ?? true
                     }
 
                     self?.didLayout()
@@ -91,13 +97,13 @@ class MainVM: BaseVM {
     }
 
     func saveSearchText(searchText: String) {
-        let history = self.getHistoryFromDb(sHistory: searchText)
+        let history = appRepository?.getHistoryFromDb(sHistory: searchText)
 
         if (history != nil) {
             if let histories = histories, let history = history, histories.contains(history) {
 
-                self.deleteHistoryFromDb(history: history)
-                self.histories = getAllHistoryFromDb()
+                appRepository?.deleteHistoryFromDb(history: history)
+                self.histories = appRepository?.getAllHistoryFromDb()
             }
         }
 
@@ -105,85 +111,15 @@ class MainVM: BaseVM {
             while (histories.count >= Constant.MAX_HISTORY_COUNT) {
                 histories.remove(at: histories.count - 1)
 
-                if let dHistories = self.getAllHistoryFromDb() {
-                    self.deleteHistoryFromDb(history: dHistories[dHistories.count - 1])
+                if let dHistories = appRepository?.getAllHistoryFromDb() {
+                    appRepository?.deleteHistoryFromDb(history: dHistories[dHistories.count - 1])
                 }
             }
 
-            self.saveHistoryToDb(sHistory: searchText)
+            appRepository?.saveHistoryToDb(sHistory: searchText)
 
-            self.histories = getAllHistoryFromDb()
+            self.histories = appRepository?.getAllHistoryFromDb()
             self.didLayout()
         }
-    }
-
-    func getAllHistoryFromDb() -> [History]? {
-        if let managedObjectContext = managedObjectContext {
-            let fetchRequest = NSFetchRequest<History>(entityName: "History")
-            let sort = NSSortDescriptor(key: #keyPath(History.added), ascending: false)
-            fetchRequest.sortDescriptors = [sort]
-
-            do {
-                let histories = try managedObjectContext.fetch(fetchRequest)
-
-                return histories
-            } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error getting all history")
-            }
-        }
-
-        return nil
-    }
-
-    func getHistoryFromDb(sHistory: String) -> History? {
-        if let managedObjectContext = managedObjectContext {
-            let entityDescription = NSEntityDescription.entity(forEntityName: "History", in: managedObjectContext)
-
-            let request = NSFetchRequest<History>(entityName: "History")
-            request.entity = entityDescription
-
-            let pred = NSPredicate(format: "(history = %@)", sHistory)
-            request.predicate = pred
-
-            do {
-                let results = try managedObjectContext.fetch(request)
-
-                if results.count > 0 {
-                    return results[0]
-                }
-            } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error getting history")
-            }
-        }
-
-        return nil
-    }
-
-    func saveHistoryToDb(sHistory: String) {
-        if let managedObjectContext = managedObjectContext {
-            let entityDescription = NSEntityDescription.entity(forEntityName: "History", in: managedObjectContext)
-
-            let history = History(entity: entityDescription!, insertInto: managedObjectContext)
-
-            history.added = Date()
-            history.history = sHistory
-
-            do {
-                try managedObjectContext.save()
-            } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error saving history")
-            }
-        }
-    }
-
-    func deleteHistoryFromDb(history: History) {
-        if let managedObjectContext = managedObjectContext {
-            do {
-                managedObjectContext.delete(history)
-                try managedObjectContext.save()
-            } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error deleting history")
-            }
-        }
-    }
+    }    
 }

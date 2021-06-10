@@ -10,6 +10,7 @@
 		0430C234EDEC47923C140340 /* Pods_TestGitHubUser_TestGitHubUserUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A04FF34E6796AFACCFC76E1 /* Pods_TestGitHubUser_TestGitHubUserUITests.framework */; };
 		04E15EC7FB4B513585989AD5 /* Pods_TestGitHubUser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD34D0D99BCFBE21ABAF7F85 /* Pods_TestGitHubUser.framework */; };
 		583875C12B89ECB6E1C81AA7 /* Pods_TestGitHubUserTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5649E81908BA7F584A61E002 /* Pods_TestGitHubUserTests.framework */; };
+		CE149BBD267200BF009C1FED /* AppRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE149BBC267200BF009C1FED /* AppRepository.swift */; };
 		CE2EA8EE26643C2500E5D63B /* MainVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2EA8ED26643C2500E5D63B /* MainVM.swift */; };
 		CE2EA8F8266442A900E5D63B /* HistoryTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2EA8F6266442A900E5D63B /* HistoryTVC.swift */; };
 		CE2EA8F9266442A900E5D63B /* HistoryTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2EA8F7266442A900E5D63B /* HistoryTVC.xib */; };
@@ -66,6 +67,7 @@
 		5673A30F1E0F0DAB2F023DA7 /* Pods-TestGitHubUser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestGitHubUser.release.xcconfig"; path = "Target Support Files/Pods-TestGitHubUser/Pods-TestGitHubUser.release.xcconfig"; sourceTree = "<group>"; };
 		5834CA7A0E137FBA26D718E6 /* Pods-TestGitHubUser-TestGitHubUserUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestGitHubUser-TestGitHubUserUITests.debug.xcconfig"; path = "Target Support Files/Pods-TestGitHubUser-TestGitHubUserUITests/Pods-TestGitHubUser-TestGitHubUserUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		6553CC61FA761ED26826D704 /* Pods-TestGitHubUserTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestGitHubUserTests.debug.xcconfig"; path = "Target Support Files/Pods-TestGitHubUserTests/Pods-TestGitHubUserTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CE149BBC267200BF009C1FED /* AppRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRepository.swift; sourceTree = "<group>"; };
 		CE2EA8ED26643C2500E5D63B /* MainVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVM.swift; sourceTree = "<group>"; };
 		CE2EA8F6266442A900E5D63B /* HistoryTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTVC.swift; sourceTree = "<group>"; };
 		CE2EA8F7266442A900E5D63B /* HistoryTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HistoryTVC.xib; sourceTree = "<group>"; };
@@ -156,6 +158,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		CE149BBB267200AD009C1FED /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CE149BBC267200BF009C1FED /* AppRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		CE2EA8F52664429300E5D63B /* HistoryTVC */ = {
 			isa = PBXGroup;
 			children = (
@@ -190,6 +200,7 @@
 		CE42D1F82663B06A000B7DB3 /* TestGitHubUser */ = {
 			isa = PBXGroup;
 			children = (
+				CE149BBB267200AD009C1FED /* Repository */,
 				CE42D2A32664302A000B7DB3 /* db */,
 				CE42D29A2663D117000B7DB3 /* Networking */,
 				CE42D28B2663CC27000B7DB3 /* model */,
@@ -589,6 +600,7 @@
 				CE42D2562663B27C000B7DB3 /* BaseVC.swift in Sources */,
 				CE42D2672663B372000B7DB3 /* BaseVM.swift in Sources */,
 				CE42D2702663B683000B7DB3 /* Constant.swift in Sources */,
+				CE149BBD267200BF009C1FED /* AppRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

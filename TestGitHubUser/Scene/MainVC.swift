@@ -26,8 +26,6 @@ class MainVC: BaseVC {
         setupUIListener()
         setupCoreData()
 
-        viewModel.initViewModel()
-
         lblNoData.isHidden = !viewModel.isShowNoData
 
         NotificationCenter.default.addObserver(self, selector: #selector(onResume), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -59,7 +57,7 @@ class MainVC: BaseVC {
     private func setupCoreData() {
         let managedObjectContext = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
         if let managedObjectContext = managedObjectContext {
-            viewModel.managedObjectContext = managedObjectContext
+            viewModel.initViewModel(appRepository: AppRepository(managedObjectContext: managedObjectContext))
         }
     }
 

@@ -10,7 +10,7 @@ import Foundation
 import SwiftyJSON
 
 enum RestService: URLRequestConvertible {
-    case searchUsers(q: String, page: Int, perPage: Int)
+    case searchUsers(q: String, page: Int, perPage: Int = Constant.ROW_PER_PAGE)
 
     public func asURLRequest() throws -> URLRequest {
         var url: URL?
