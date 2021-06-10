@@ -7,10 +7,11 @@
 
 import UIKit
 import Kingfisher
+import SVProgressHUD
 
 class MainVC: BaseVC {
 
-    lazy var viewModel = MainVM(vc: self)
+    lazy var viewModel = MainVM()
 
     @IBOutlet weak var tfSearch: UITextField!
     @IBOutlet weak var ivSearch: UIImageView!
@@ -25,10 +26,9 @@ class MainVC: BaseVC {
         setupTableView()
         setupUIListener()
         setupCoreData()
+        setupObserver()
 
         viewModel.initViewModel()
-
-        lblNoData.isHidden = !viewModel.isShowNoData
 
         NotificationCenter.default.addObserver(self, selector: #selector(onResume), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPause), name: UIApplication.willResignActiveNotification, object: nil)
@@ -63,6 +63,40 @@ class MainVC: BaseVC {
         }
     }
 
+    private func setupObserver() {
+        viewModel.isShowDialogLoading.observe { [weak self] value in
+            if value {
+                if self?.viewModel.users.isEmpty ?? true {
+                    SVProgressHUD.setOffsetFromCenter(UIOffset(horizontal: UIApplication.shared.keyWindow?.center.x ?? 0, vertical: UIApplication.shared.keyWindow?.center.y ?? 0))
+                    SVProgressHUD.showGradient()
+                }
+            } else {
+                SVProgressHUD.dismiss()
+            }
+        }
+
+        viewModel.toastMessage.observe { [weak self] value in
+            if !value.isEmpty {
+                self?.showToast(message: value, font: .systemFont(ofSize: 12.0))
+                self?.viewModel.toastMessage.value = ""
+            }
+        }
+
+        viewModel.notifyList.observe { [weak self] value in
+            if value {
+                self?.tvUser.reloadData()
+                self?.viewModel.notifyList.value = false
+            }
+        }
+
+        viewModel.doShowNoData.observe { [weak self] value in
+            if let _ = value {
+                self?.lblNoData.isHidden = !(self?.viewModel.isShowNoData ?? true)
+                self?.viewModel.doShowNoData.value = nil
+            }
+        }
+    }
+
     @objc func textFieldDidChange(_ textField: UITextField) {
         viewModel.searchText = textField.text ?? ""
         viewModel.isNewSearch = true
@@ -90,10 +124,12 @@ class MainVC: BaseVC {
     }
     */
 
-    @objc override func layouting(notification _: NSNotification? = nil) {
+    /*
+    func layouting(notification _: NSNotification? = nil) {
         lblNoData.isHidden = !viewModel.isShowNoData
         tvUser.reloadData()
     }
+    */
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.backgroundColor = UIColor(hex: "0x00BCD4")

@@ -8,7 +8,6 @@
 import Foundation
 import Alamofire
 import SVProgressHUD
-import EZAlertController
 import CoreData
 
 class MainVM: BaseVM {
@@ -20,15 +19,21 @@ class MainVM: BaseVM {
 
     var users: [User] = []
     var searchUsersReponse: SearchUsersResponse?
+    let notifyList: LiveData<Bool> = LiveData(false)
 
     var isShowHistory = true
     var isShowNoData = false
+    let doShowNoData: LiveData<Bool?> = LiveData(false)
 
     var managedObjectContext: NSManagedObjectContext?
     var histories: [History]?
 
     func initViewModel() {
         histories = getAllHistoryFromDb()
+        if let value = histories?.isEmpty {
+            isShowNoData = value
+            doShowNoData.value = self.isShowNoData
+        }
     }
 
     func searchUsers(q: String, page: Int, perPage: Int = Constant.ROW_PER_PAGE) {
@@ -36,9 +41,9 @@ class MainVM: BaseVM {
             return
         }
 
-        SVProgressHUD.showGradient()
+        isShowDialogLoading.value = true
         request(RestService.searchUsers(q: q, page: page, perPage: perPage)).responseJSON { [weak self] resp in
-            SVProgressHUD.dismiss()
+            self?.isShowDialogLoading.value = false
             resp.validate { json in
                 do {
                     let data = try json.rawData(options: .prettyPrinted)
@@ -48,6 +53,7 @@ class MainVM: BaseVM {
 
                     self?.isShowHistory = false
                     self?.isShowNoData = false
+                    self?.doShowNoData.value = self?.isShowNoData
                     if let items = response.items {
                         if items.count > 0 {
 
@@ -58,19 +64,22 @@ class MainVM: BaseVM {
 
                             for user in items {
                                 self?.users.append(user)
+                                //self?.userData.value = user
                             }
 
                             self?.page = page
                         } else {
-                            self?.isShowNoData = true
+                            self?.isShowNoData = self?.users.isEmpty ?? true
+                            self?.doShowNoData.value = self?.isShowNoData
                         }
                     } else {
-                        self?.isShowNoData = true
+                        self?.isShowNoData = self?.users.isEmpty ?? true
+                        self?.doShowNoData.value = self?.isShowNoData
                     }
 
-                    self?.didLayout()
+                    self?.notifyList.value = true
                 } catch {
-                    SVProgressHUD.showDismissableError(with: error.localizedDescription)
+                    self?.toastMessage.value = "Error: \(error.localizedDescription)"
                 }
             }
         }
@@ -78,7 +87,7 @@ class MainVM: BaseVM {
 
     func processInputUserName() {
         if searchText.isEmpty {
-            EZAlertController.alert("error", message: "please input the username")
+            toastMessage.value = "Error: please input the username"
             return
         }
 
@@ -113,7 +122,7 @@ class MainVM: BaseVM {
             self.saveHistoryToDb(sHistory: searchText)
 
             self.histories = getAllHistoryFromDb()
-            self.didLayout()
+            self.notifyList.value = true
         }
     }
 
@@ -128,7 +137,7 @@ class MainVM: BaseVM {
 
                 return histories
             } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error getting all history")
+                toastMessage.value = "Error - " + String(describing:error.localizedFailureReason ?? "error getting all history")
             }
         }
 
@@ -152,7 +161,7 @@ class MainVM: BaseVM {
                     return results[0]
                 }
             } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error getting history")
+                toastMessage.value = "Error - " + String(describing:error.localizedFailureReason ?? "error getting history")
             }
         }
 
@@ -171,7 +180,7 @@ class MainVM: BaseVM {
             do {
                 try managedObjectContext.save()
             } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error saving history")
+                toastMessage.value = "Error - " + String(describing:error.localizedFailureReason ?? "error saving history")
             }
         }
     }
@@ -182,7 +191,7 @@ class MainVM: BaseVM {
                 managedObjectContext.delete(history)
                 try managedObjectContext.save()
             } catch let error as NSError {
-                EZAlertController.alert("error", message: error.localizedFailureReason ?? "error deleting history")
+                toastMessage.value = "Error - " + String(describing:error.localizedFailureReason ?? "error deleting history")
             }
         }
     }
