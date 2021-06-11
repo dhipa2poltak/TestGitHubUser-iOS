@@ -12,6 +12,7 @@
 		583875C12B89ECB6E1C81AA7 /* Pods_TestGitHubUserTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5649E81908BA7F584A61E002 /* Pods_TestGitHubUserTests.framework */; };
 		CE149BAC26711F84009C1FED /* LiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE149BAB26711F84009C1FED /* LiveData.swift */; };
 		CE149BB426712107009C1FED /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE149BB326712107009C1FED /* UIViewController+Ext.swift */; };
+		CE149BF626739926009C1FED /* AppRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE149BF526739926009C1FED /* AppRepository.swift */; };
 		CE2EA8EE26643C2500E5D63B /* MainVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2EA8ED26643C2500E5D63B /* MainVM.swift */; };
 		CE2EA8F8266442A900E5D63B /* HistoryTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2EA8F6266442A900E5D63B /* HistoryTVC.swift */; };
 		CE2EA8F9266442A900E5D63B /* HistoryTVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2EA8F7266442A900E5D63B /* HistoryTVC.xib */; };
@@ -70,6 +71,7 @@
 		6553CC61FA761ED26826D704 /* Pods-TestGitHubUserTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestGitHubUserTests.debug.xcconfig"; path = "Target Support Files/Pods-TestGitHubUserTests/Pods-TestGitHubUserTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CE149BAB26711F84009C1FED /* LiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveData.swift; sourceTree = "<group>"; };
 		CE149BB326712107009C1FED /* UIViewController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Ext.swift"; sourceTree = "<group>"; };
+		CE149BF526739926009C1FED /* AppRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRepository.swift; sourceTree = "<group>"; };
 		CE2EA8ED26643C2500E5D63B /* MainVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVM.swift; sourceTree = "<group>"; };
 		CE2EA8F6266442A900E5D63B /* HistoryTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTVC.swift; sourceTree = "<group>"; };
 		CE2EA8F7266442A900E5D63B /* HistoryTVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HistoryTVC.xib; sourceTree = "<group>"; };
@@ -168,6 +170,14 @@
 			path = BindingUtil;
 			sourceTree = "<group>";
 		};
+		CE149BF42673990E009C1FED /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CE149BF526739926009C1FED /* AppRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		CE2EA8F52664429300E5D63B /* HistoryTVC */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,6 +212,7 @@
 		CE42D1F82663B06A000B7DB3 /* TestGitHubUser */ = {
 			isa = PBXGroup;
 			children = (
+				CE149BF42673990E009C1FED /* Repository */,
 				CE149BAA26711F55009C1FED /* BindingUtil */,
 				CE42D2A32664302A000B7DB3 /* db */,
 				CE42D29A2663D117000B7DB3 /* Networking */,
@@ -585,6 +596,7 @@
 				CE42D2602663B326000B7DB3 /* SVProgressHUD+Ext.swift in Sources */,
 				CE42D2932663CFFF000B7DB3 /* SearchUsersResponse.swift in Sources */,
 				CE42D26F2663B683000B7DB3 /* Typealias.swift in Sources */,
+				CE149BF626739926009C1FED /* AppRepository.swift in Sources */,
 				CE42D2712663B683000B7DB3 /* Function.swift in Sources */,
 				CE42D2AF266430A6000B7DB3 /* History+CoreDataProperties.swift in Sources */,
 				CE42D1FE2663B06A000B7DB3 /* MainVC.swift in Sources */,

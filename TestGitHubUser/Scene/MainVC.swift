@@ -28,8 +28,6 @@ class MainVC: BaseVC {
         setupCoreData()
         setupObserver()
 
-        viewModel.initViewModel()
-
         NotificationCenter.default.addObserver(self, selector: #selector(onResume), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onPause), name: UIApplication.willResignActiveNotification, object: nil)
     }
@@ -59,7 +57,7 @@ class MainVC: BaseVC {
     private func setupCoreData() {
         let managedObjectContext = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
         if let managedObjectContext = managedObjectContext {
-            viewModel.managedObjectContext = managedObjectContext
+            viewModel.initViewModel(appRepository: AppRepository(managedObjectContext: managedObjectContext))
         }
     }
 
